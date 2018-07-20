@@ -1,0 +1,5 @@
+<Bindings>
+  <Binding name="ZTWEAKS_MOUSEMODE" description="Toggle the Mousemode." header="ZTWEAKS">
+    ZTweaks:MouseModeFunction()
+  </Binding>
+</Bindings>
