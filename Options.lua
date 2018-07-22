@@ -2,6 +2,7 @@ local addonName, addonTable = ...
 local Options = ZTweaks:NewModule("Options")
 local L = LibStub("AceLocale-3.0"):GetLocale(addonName)
 
+
 local options = {
     name = addonName,
     handler = ZTweaks,
@@ -36,6 +37,7 @@ local defaults = {
 		}
 	}
 }
+
 
 function Options:OnInitialize()
 	ZTweaks.db = LibStub("AceDB-3.0"):New("ZTweaksDB", defaults, true)

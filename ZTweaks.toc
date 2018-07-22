@@ -4,16 +4,21 @@
 ## Title: ZTweaks
 ## SavedVariables: ZTweaksDB
 ## LoadOnDemand: 0
-## RequiredDeps:
-## OptionalDeps: Ace3
-## X-Embeds: Ace3
+## RequiredDeps: oUF
+## OptionalDeps: Ace3, LibSharedMedia-3.0, AceGUI-3.0-SharedMediaWidgets
+## X-Embeds: Ace3, LibSharedMedia-3.0, AceGUI-3.0-SharedMediaWidgets
 
 embeds.xml
 
 Locale\Locale-enUS.lua
 
 Main.lua
+Utility.lua
 Options.lua
+Media.lua
 Bindings.lua
 
+oUFElements\Elements.xml
+
 Modules\MouseLookModule.lua
+Modules\UnitFramesModule.lua

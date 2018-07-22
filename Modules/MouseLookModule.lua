@@ -1,8 +1,22 @@
 local addonName, addonTable = ...
 local MouseLookModule = ZTweaks:NewModule("MouseLookModule")
 
+
 local IsMouselooking = _G.IsMouselooking
 local MouselookStart, MouselookStop = _G.MouselookStart, _G.MouselookStop
+
+
+function MouseLookModule:OnInitialize()
+	self:SetEnabledState(ZTweaks.db.profile.modules.enabled.mouselook)
+end
+
+function MouseLookModule:OnEnable()
+	self:SetOverrideBindings()
+end
+
+function MouseLookModule:OnDisable()
+	MouseLookModule:ClearOverrideBindings()
+end
 
 function MouseLookModule:SetOverrideBindings()
 	_G.SetMouselookOverrideBinding("BUTTON1", GetBindingByKey("W"))
@@ -17,20 +31,8 @@ end
 function MouseLookModule:ToggleMouseMode()
     if IsMouselooking() then
         MouselookStop()
-        ZTweaks.wasMouselooking = false
+		ZTweaks.wasMouselooking = false
     else
-        MouselookStart()
+		MouselookStart()
     end
-end
-
-function MouseLookModule:OnInitialize()
-	self:SetEnabledState(ZTweaks.db.profile.modules.enabled.mouselook)
-end
-
-function MouseLookModule:OnEnable()
-	self:SetOverrideBindings()
-end
-
-function MouseLookModule:OnDisable()
-	MouseLookModule:ClearOverrideBindings()
 end
