@@ -7,12 +7,14 @@ local LSM = LibStub("LibSharedMedia-3.0")
 LSM:Register("border", "White Square 1px", [[Interface\AddOns\ZTweaks\Assets\Textures\Border1px.tga]])
 LSM:Register("statusbar", "Sleek", [[Interface\AddOns\ZTweaks\Assets\Textures\SleekTexture.tga]])
 
+Media.QuestionMark = "Interface\\ICONS\\INV_Misc_QuestionMark.blp"
+
 Media.Colors = setmetatable({
-	disconnected = { 0.42, 0.37, 0.32 },
-	smooth = setmetatable({
-		0.69, 0.31, 0.31,
-		0.71, 0.43, 0.27,
-		0.17, 0.17, 0.24,
+    disconnected = { 0.42, 0.37, 0.32 },
+    smooth = setmetatable({
+		255/255, 0/255, 0/255,
+		120/255, 80/255, 30/255,
+		40/255, 235/255, 20/255,
 	}, { __index = oUF.colors.smooth }),
 	tapped = { 0.42, 0.37, 0.32 },
 }, { __index = oUF.colors })

@@ -12,6 +12,24 @@ end
 
 function MouseLookModule:OnEnable()
 	self:SetOverrideBindings()
+
+	if ZTweaks.db.profile.modules.enabled.mousecast then
+		local MouseCastHookFrame = CreateFrame("Frame", nil, ZTweaksMouseCastContainer)
+
+		MouseCastHookFrame:SetScript("OnShow", function()
+			if IsMouselooking() then
+				MouselookStop()
+				ZTweaks.wasMouselooking = true
+			end
+		end)
+
+		MouseCastHookFrame:SetScript("OnHide", function()
+			if ZTweaks.wasMouselooking then
+				MouselookStart()
+				ZTweaks.wasMouselooking = false
+			end
+		end)
+	end
 end
 
 function MouseLookModule:OnDisable()

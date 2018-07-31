@@ -33,14 +33,89 @@ function Utility:Debug(Msg, DebugLevel, Sender)
     ZTweaks:Print(Msg)
 end
 
-function Utility:ThrowError(Msg)
-    assert(false, addonName .. ": " .. Msg)
+function Utility:ThrowError(Check, Msg)
+    assert(Check, addonName .. ": " .. Msg)
 end
 
-function Utility:ThrowWrongParamError(Prefix, FunctionSyntax, ParamName, ParamValue, AllowedValues)
+function Utility:ThrowWrongParamError(Check, Prefix, ParamName, ParamValue, AllowedValues)
     if (Prefix) then
-        Utility:ThrowError("<" .. Prefix .. "> Func: " .. FunctionSyntax .. " | Parameter: " .. ParamName .. " = " .. ParamValue .." | Parameter has to match: " .. AllowedValues)
+        Utility:ThrowError(Check, "<" .. Prefix .. "> Parameter: " .. ParamName .. " = " .. ParamValue .." | Parameter has to match: " .. AllowedValues)
     else
-        Utility:ThrowError("Func: " .. FunctionSyntax .. " | Parameter: " .. ParamName .. " = " .. ParamValue .." | Parameter has match: " .. AllowedValues)
+        Utility:ThrowError(Check, "Parameter: " .. ParamName .. " = " .. ParamValue .." | Parameter has to match: " .. AllowedValues)
     end
+end
+
+function Utility:OneDimMatrix(SizeD1, InitialValue, SaveIn)
+    local Matrix = {}
+    for id1 = 1, SizeD1 do
+        Matrix[id1] = InitialValue
+    end
+    if SaveIn == nil then
+        SaveIn = Matrix
+    else
+        for id1 = 1, SizeD1 do
+            if SaveIn[id1] == nil then
+                SaveIn[id1] = InitialValue
+            end
+        end
+    end
+    return SaveIn
+end
+
+function Utility:TwoDimMatrix(SizeD1, SizeD2, InitialValue, SaveIn)
+    local Matrix = {}
+    for id1 = 1, SizeD1 do
+        Matrix[id1] = {}
+        for id2 = 1, SizeD2 do
+            Matrix[id1][id2] = InitialValue
+        end
+    end
+    if SaveIn == nil then
+        SaveIn = Matrix
+    else
+        for id1 = 1, SizeD1 do
+            if SaveIn[id1] == nil then
+                SaveIn[id1] = Matrix[id1]
+            end
+            for id2 = 1, SizeD1 do
+                if SaveIn[id1][id2] == nil then
+                    SaveIn[id1][id2] = InitialValue
+                end
+            end
+        end
+    end
+    return SaveIn
+end
+
+function Utility:ThreeDimMatrix(SizeD1, SizeD2, SizeD3, InitialValue, SaveIn)
+    local Matrix = {}
+    for id1 = 1, SizeD1 do
+        Matrix[id1] = {}
+        for id2 = 1, SizeD2 do
+            Matrix[id1][id2] = {}
+            for id3 = 1, SizeD3 do
+                Matrix[id1][id2][id3] = InitialValue
+            end
+        end
+    end
+    if SaveIn == nil then
+        SaveIn = Matrix
+    else
+        for id1 = 1, SizeD1 do
+            if SaveIn[id1] == nil then
+                SaveIn[id1] = Matrix[id1]
+            end
+            for id2 = 1, SizeD2 do
+                if SaveIn[id1][id2] == nil then
+                    SaveIn[id1][id2] = Matrix[id1][id2]
+                end
+                for id3 = 1, SizeD3 do
+                    if SaveIn[id1][id2][id3] == nil then
+                        SaveIn[id1][id2][id3] = InitialValue
+                    end
+                end
+            end
+        end
+    end
+    return SaveIn
 end

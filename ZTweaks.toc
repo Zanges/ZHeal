@@ -13,12 +13,14 @@ embeds.xml
 Locale\Locale-enUS.lua
 
 Main.lua
+Media.lua
 Utility.lua
 Options.lua
-Media.lua
 Bindings.lua
 
 oUFElements\Elements.xml
 
 Modules\MouseLookModule.lua
+Modules\MouseCastModule.lua
 Modules\UnitFramesModule.lua
+Modules\TradeTweaksModule.lua
