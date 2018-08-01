@@ -20,6 +20,7 @@ local options = {
 					name = "Mouselook Module Enabled",
 					set = function(info, input)
 						ZTweaks.db.profile.modules.enabled.mouselook = input
+						ZTweaks:GetModule("MouseLookModule"):SetEnabledState(input)
 					end,
 					get = function(info)
 						return ZTweaks.db.profile.modules.enabled.mouselook
@@ -71,6 +72,7 @@ local options = {
 					name = "Mouse Cast Module Enabled",
 					set = function(info, input)
 						ZTweaks.db.profile.modules.enabled.mousecast = input
+						ZTweaks:GetModule("MouseCastModule"):SetEnabledState(input)
 					end,
 					get = function(info)
 						return ZTweaks.db.profile.modules.enabled.mousecast
@@ -118,6 +120,24 @@ local options = {
 				},
 			},
 		},
+		tradetweaks = {
+			name = "Trade Tweaks",
+			order = 60,
+			type = "group",
+			args = {
+				enabled = {
+					type = "toggle",
+					name = "Trade Tweaks Module Enabled",
+					set = function(info, input)
+						ZTweaks.db.profile.modules.enabled.tradetweaks = input
+						ZTweaks:GetModule("TradeTweaksModule"):SetEnabledState(input)
+					end,
+					get = function(info)
+						return ZTweaks.db.profile.modules.enabled.tradetweaks
+					end,
+				},
+			},
+		},
     },
 }
 
@@ -128,9 +148,10 @@ local defaults = {
 		modules = {
 			enabled = {
 				mouselook = true,
-				unitframes = true,
+				unitframes = false,
 				hud = true,
 				mousecast = true,
+				tradetweaks = true,
 			},
 			mousecast = {
 				key = nil,
@@ -314,24 +335,9 @@ function Options:OnInitialize()
 	Options:RegisterChatCommand("ztweaks", "OpenStandaloneConfig")
 	LibStub("AceConfigDialog-3.0"):AddToBlizOptions(addonName)
 
-	--[[
-	if ZTweaks.db.char.modules.mousecast.abilityList == nil then
-		ZTweaks.db.char.modules.mousecast.abilityList = {}
-		for spec = 1, 4 do
-			ZTweaks.db.char.modules.mousecast.usemouseover[spec] = false
-			ZTweaks.db.char.modules.mousecast.abilityList[spec] = {}
-			for ix = 1, 5 do
-				ZTweaks.db.char.modules.mousecast.abilityList[spec][ix] = {}
-				for iy = 1, 5 do
-					ZTweaks.db.char.modules.mousecast.abilityList[spec][ix][iy] = 0
-				end
-			end
-		end
-	end
-	--]]
-
-	--Utility:ThreeDimMatrix(4, 5, 5, nil, ZTweaks.db.char.modules.mousecast.abilityList)
-	--Utility:OneDimMatrix(4, false, ZTweaks.db.char.modules.mousecast.usemouseover)
+	ZTweaks:GetModule("MouseLookModule"):SetEnabledState(ZTweaks.db.profile.modules.enabled.mouselook)
+	ZTweaks:GetModule("MouseCastModule"):SetEnabledState(ZTweaks.db.profile.modules.enabled.mousecast)
+	ZTweaks:GetModule("TradeTweaksModule"):SetEnabledState(ZTweaks.db.profile.modules.enabled.tradetweaks)
 
 	Options:CreateSpellBindUI(40, 5, 10, 10, -100, -150)
 	Options:UpdateSpellBindUI()

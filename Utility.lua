@@ -119,3 +119,42 @@ function Utility:ThreeDimMatrix(SizeD1, SizeD2, SizeD3, InitialValue, SaveIn)
     end
     return SaveIn
 end
+
+function Utility:VerticalText(string)
+    if not string then
+        return ""
+    end
+    local ReturnString = ""
+    for i=1, strlen(string) do
+        ReturnString = ReturnString .. strsub(string, i, i) .. "\n"
+    end
+    return ReturnString
+end
+
+-- From: https://wow.gamepedia.com/ChunkSplit
+function Utility:ChunkSplit(string, length, endChars)
+    if not string then
+        return {}
+    end
+    -- Sanity check: make sure length is an integer.
+    length = floor(tonumber(length))
+    if not length then
+        length = 1
+    end
+    if not endChars then
+        endChars = "\n"
+    end
+    local Table = {}
+    for i=1, strlen(string), length do
+        table.insert(Table, strsub(string, i, i + length) .. endChars)
+    end
+    return Table
+end
+
+function Utility:Truncate(number, decimals)
+    if number == 0 then
+        return number
+    end
+    
+    return number - (number % (0.1 ^ decimals))
+end

@@ -30,9 +30,6 @@ function MouseCastModule:OnInitialize()
             local btn
             if SpellID ~= nil and SpellID ~= 0 then
                 MouseCastModule:CreateMarker(SpellID, MouseCastContainer, MouseCastMarkerSize, nil, 0.4, (ix - 1) * MouseCastMarkerSize, (iy - 1) * MouseCastMarkerSize)
-                btn = CreateFrame("Button", "ZTweaksMouseCast_Button_" .. ix .. iy, UIParent, "SecureActionButtonTemplate")
-                btn:SetAttribute("type", "spell")
-                btn:SetAttribute("spell", GetSpellInfo(SpellID))
 			end
             Helper:SetAttribute("AbilityList" .. ix .. iy, GetSpellInfo(SpellID))
             Helper:SetAttribute("AbilityButton" .. ix .. iy, btn)
