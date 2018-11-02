@@ -1,14 +1,15 @@
 local addonName, addonTable = ...
-addonTable.Media = ZTweaks:NewModule("Media")
+addonTable.Media = ZHeal:NewModule("Media")
 local Media = addonTable.Media
 local LSM = LibStub("LibSharedMedia-3.0")
 
 
-LSM:Register("border", "White Square 1px", [[Interface\AddOns\ZTweaks\Assets\Textures\Border1px.tga]])
-LSM:Register("statusbar", "Sleek", [[Interface\AddOns\ZTweaks\Assets\Textures\SleekTexture.tga]])
+LSM:Register("border", "White Square 1px", [[Interface\AddOns\ZHeal\Assets\Textures\Border1px.tga]])
+LSM:Register("statusbar", "Sleek", [[Interface\AddOns\ZHeal\Assets\Textures\SleekTexture.tga]])
 
 Media.QuestionMark = "Interface\\ICONS\\INV_Misc_QuestionMark.blp"
 
+--[[
 Media.Colors = setmetatable({
     disconnected = { 0.42, 0.37, 0.32 },
     smooth = setmetatable({
@@ -18,6 +19,7 @@ Media.Colors = setmetatable({
 	}, { __index = oUF.colors.smooth }),
 	tapped = { 0.42, 0.37, 0.32 },
 }, { __index = oUF.colors })
+--]]
 
 Media.Assets = {
     -- Media.Assets.BACKDROP

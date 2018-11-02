@@ -1,5 +1,5 @@
 local addonName, addonTable = ...
-addonTable.Utility = ZTweaks:NewModule("Utility")
+addonTable.Utility = ZHeal:NewModule("Utility")
 local Utility = addonTable.Utility
 
 
@@ -30,7 +30,7 @@ function Utility:Debug(Msg, DebugLevel, Sender)
         --Msg = Sender .. ": " .. Msg
     end
     
-    ZTweaks:Print(Msg)
+    ZHeal:Print(Msg)
 end
 
 function Utility:ThrowError(Check, Msg)
@@ -43,81 +43,6 @@ function Utility:ThrowWrongParamError(Check, Prefix, ParamName, ParamValue, Allo
     else
         Utility:ThrowError(Check, "Parameter: " .. ParamName .. " = " .. ParamValue .." | Parameter has to match: " .. AllowedValues)
     end
-end
-
-function Utility:OneDimMatrix(SizeD1, InitialValue, SaveIn)
-    local Matrix = {}
-    for id1 = 1, SizeD1 do
-        Matrix[id1] = InitialValue
-    end
-    if SaveIn == nil then
-        SaveIn = Matrix
-    else
-        for id1 = 1, SizeD1 do
-            if SaveIn[id1] == nil then
-                SaveIn[id1] = InitialValue
-            end
-        end
-    end
-    return SaveIn
-end
-
-function Utility:TwoDimMatrix(SizeD1, SizeD2, InitialValue, SaveIn)
-    local Matrix = {}
-    for id1 = 1, SizeD1 do
-        Matrix[id1] = {}
-        for id2 = 1, SizeD2 do
-            Matrix[id1][id2] = InitialValue
-        end
-    end
-    if SaveIn == nil then
-        SaveIn = Matrix
-    else
-        for id1 = 1, SizeD1 do
-            if SaveIn[id1] == nil then
-                SaveIn[id1] = Matrix[id1]
-            end
-            for id2 = 1, SizeD1 do
-                if SaveIn[id1][id2] == nil then
-                    SaveIn[id1][id2] = InitialValue
-                end
-            end
-        end
-    end
-    return SaveIn
-end
-
-function Utility:ThreeDimMatrix(SizeD1, SizeD2, SizeD3, InitialValue, SaveIn)
-    local Matrix = {}
-    for id1 = 1, SizeD1 do
-        Matrix[id1] = {}
-        for id2 = 1, SizeD2 do
-            Matrix[id1][id2] = {}
-            for id3 = 1, SizeD3 do
-                Matrix[id1][id2][id3] = InitialValue
-            end
-        end
-    end
-    if SaveIn == nil then
-        SaveIn = Matrix
-    else
-        for id1 = 1, SizeD1 do
-            if SaveIn[id1] == nil then
-                SaveIn[id1] = Matrix[id1]
-            end
-            for id2 = 1, SizeD2 do
-                if SaveIn[id1][id2] == nil then
-                    SaveIn[id1][id2] = Matrix[id1][id2]
-                end
-                for id3 = 1, SizeD3 do
-                    if SaveIn[id1][id2][id3] == nil then
-                        SaveIn[id1][id2][id3] = InitialValue
-                    end
-                end
-            end
-        end
-    end
-    return SaveIn
 end
 
 function Utility:VerticalText(string)
@@ -157,4 +82,13 @@ function Utility:Truncate(number, decimals)
     end
     
     return number - (number % (0.1 ^ decimals))
+end
+
+function Utility:GetGroupType()
+    if UnitInRaid("player") then
+        return "RAID"
+    elseif UnitInParty("player") then
+        return "PARTY"
+    end
+    return "SOLO"
 end

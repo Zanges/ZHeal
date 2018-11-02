@@ -1,8 +1,0 @@
-<Bindings>
-  <Binding name="ZTWEAKS_MOUSEMODE" description="Toggle the Mousemode." header="ZTWEAKS">
-    ZTweaks:MouseModeFunction()
-  </Binding>
-  <Binding name="ZTWEAKS_MOUSECAST" description="Mouse Cast Mode." runOnUp="true">
-    print(ZTweaks:GetModule("MouseCastModule").Buttons["button"]:IsMouseOver())
-  </Binding>
-</Bindings>

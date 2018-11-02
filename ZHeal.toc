@@ -1,0 +1,24 @@
+## Interface: 80000
+## Author: Zanges
+## Version: 1.0
+## Title: ZHeal
+## SavedVariables: ZHealDB
+## LoadOnDemand: 0
+## RequiredDeps: 
+## OptionalDeps: Ace3, LibSharedMedia-3.0, AceGUI-3.0-SharedMediaWidgets, Masque
+## X-Embeds: Ace3, LibSharedMedia-3.0, AceGUI-3.0-SharedMediaWidgets
+## X-oUF: ZHeal_oUF
+
+embeds.xml
+
+Locale\Locale-enUS.lua
+
+Main.lua
+
+Media.lua
+Utility.lua
+Options.lua
+
+oUFElements\Elements.xml
+
+UnitFrames.lua
