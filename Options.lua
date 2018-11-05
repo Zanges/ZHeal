@@ -2,6 +2,7 @@ local addonName, addonTable = ...
 local Options = ZHeal:NewModule("Options", "AceConsole-3.0")
 local L = LibStub("AceLocale-3.0"):GetLocale(addonName)
 local Utility = addonTable.Utility
+local LSM = LibStub("LibSharedMedia-3.0")
 
 
 local options = {
@@ -26,6 +27,20 @@ local options = {
 					end,
 					get = function(info)
 						return ZHeal.db.profile.unitWidth
+					end,
+                },
+                unitSpacing = {
+                    name = "Unit Spacing",
+                    order = 20,
+                    type = "range",
+                    min = 0,
+                    max = 20,
+                    step = 1,
+                    set = function(info, input)
+						ZHeal.db.profile.unitSpacing = input
+					end,
+					get = function(info)
+						return ZHeal.db.profile.unitSpacing
 					end,
                 },
                 buttonSpacing = {
@@ -70,6 +85,80 @@ local options = {
 					end,
 					get = function(info)
 						return ZHeal.db.profile.positionY
+					end,
+                },
+                textFont = {
+                    name = "Text Font",
+                    order = 40,
+                    type = "select",
+                    dialogControl = "LSM30_Font", --Select your widget here
+                    values = LSM:HashTable("font"), -- pull in your font list from LSM
+                    set = function(info, input)
+                        ZHeal.db.profile.textFontName = input
+                        ZHeal.db.profile.textFont = LSM:Fetch(LSM.MediaType.FONT, input)
+                        ZHeal:GetModule("UnitFramesModule"):UpdateText()
+					end,
+					get = function(info)
+						return ZHeal.db.profile.textFontName
+					end,
+                },
+                textSizeName = {
+                    name = "Name Size",
+                    order = 42,
+                    type = "range",
+                    min = 1,
+                    max = 36,
+                    step = 1,
+                    set = function(info, input)
+                        ZHeal.db.profile.textSizeName = input
+                        ZHeal:GetModule("UnitFramesModule"):UpdateText()
+					end,
+					get = function(info)
+						return ZHeal.db.profile.textSizeName
+					end,
+                },
+                nameMaxLength = {
+                    name = "Name Max Length",
+                    order = 43,
+                    type = "range",
+                    min = 1,
+                    max = 10000,
+                    softMax = 18,
+                    step = 1,
+                    set = function(info, input)
+                        ZHeal.db.profile.nameMaxLength = input
+					end,
+					get = function(info)
+						return ZHeal.db.profile.nameMaxLength
+					end,
+                },
+                textSizeHealth = {
+                    name = "HP% Size",
+                    order = 45,
+                    type = "range",
+                    min = 1,
+                    max = 36,
+                    step = 1,
+                    set = function(info, input)
+                        ZHeal.db.profile.textSizeHealth = input
+                        ZHeal:GetModule("UnitFramesModule"):UpdateText()
+					end,
+					get = function(info)
+						return ZHeal.db.profile.textSizeHealth
+					end,
+                },
+                textColorHealth = {
+                    name = "Health Color",
+                    order = 46,
+                    type = "color",
+                    set = function(info, r, g, b)
+                        ZHeal.db.profile.textColorHealth.R = r
+                        ZHeal.db.profile.textColorHealth.G = g
+                        ZHeal.db.profile.textColorHealth.B = b
+                        ZHeal:GetModule("UnitFramesModule"):UpdateText()
+					end,
+					get = function(info)
+						return ZHeal.db.profile.textColorHealth.R, ZHeal.db.profile.textColorHealth.G, ZHeal.db.profile.textColorHealth.B
 					end,
                 },
             },
@@ -117,9 +206,20 @@ local options = {
 local defaults = {
 	profile = {
         unitWidth = 40,
+        unitSpacing = 10,
         buttonSpacing = 4,
         positionX = 0,
         positionY = 0,
+        textFont = "Fonts\\FRIZQT__.TTF",
+        textFontName = "Friz Quadrata TT",
+        textSizeName = 18,
+        nameMaxLength = 7,
+        textSizeHealth = 12,
+        textColorHealth = {
+            R = 1.0,
+            G = 1.0,
+            B = 1.0,
+        },
 	},
 	char = {
         

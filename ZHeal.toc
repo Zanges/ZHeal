@@ -5,7 +5,7 @@
 ## SavedVariables: ZHealDB
 ## LoadOnDemand: 0
 ## RequiredDeps: 
-## OptionalDeps: Ace3, LibSharedMedia-3.0, AceGUI-3.0-SharedMediaWidgets, Masque
+## OptionalDeps: Ace3, LibSharedMedia-3.0, AceGUI-3.0-SharedMediaWidgets, Masque, oUF_Dispellable
 ## X-Embeds: Ace3, LibSharedMedia-3.0, AceGUI-3.0-SharedMediaWidgets
 ## X-oUF: ZHeal_oUF
 

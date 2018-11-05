@@ -14,6 +14,8 @@ local buttonIndex = 0
 local HealButtonsPlayer = {}
 local HealButtonsParty = {}
 local HealButtonsRaid = {}
+local TextNameArray = {}
+local TextHealthArray = {}
 
 
 function UnitFramesModule:OnInitialize()
@@ -44,8 +46,25 @@ local UnitFramesStyle = function(self, unit)
     self:SetBackdropBorderColor(Media:Grayscale(0.4))
     self:SetBackdropColor(Media:Grayscale(0.15))
     self:SetSize(ZHeal.db.profile.unitWidth, (ZHeal.db.profile.unitWidth  * ZHeal.db.class.numButtons) - (ZHeal.db.profile.buttonSpacing  * (ZHeal.db.class.numButtons - 1)))
+
+    self.Range = {
+        insideAlpha = 1.0,
+        outsideAlpha = 0.7,
+    }
+
     local HealthBar, HealthBG = addonTable.AddVerticalHealthBar(self, self, "BOTTOMLEFT", 2, 0, 0.8, 1)
     local PowerBar, PowerBG = addonTable.AddVerticalPowerBar(self, self, "BOTTOMRIGHT", 2, 0, 0.2, 1)
+    addonTable.AddDispel(self, unit)
+    addonTable.AddRaidTargetIndicator(self, unit, 16, 3, 3, "BOTTOMLEFT")
+    addonTable.AddGroupRoleIndicator(self, unit, 16, -3, 3, "BOTTOMRIGHT")
+    addonTable.AddBuffs(self, unit)
+    addonTable.AddDebuffs(self, unit)
+    --[[
+    local NameText = addonTable.AddNameText(self, unit, ZHeal.db.profile.textFont, ZHeal.db.profile.textSizeName, 0, -8, "CENTER")
+    table.insert(TextNameArray, NameText)
+    local HealthText = addonTable.AddHealthText(self, unit, ZHeal.db.profile.textFont, ZHeal.db.profile.textSizeHealth, 0, -5, "TOP")
+    table.insert(TextHealthArray, HealthText)
+    --]]
 end
 
 oUF:RegisterStyle(addonName .. "UnitFrames", UnitFramesStyle)
@@ -57,21 +76,23 @@ function UnitFramesModule:CreateUnitFrames()
     PositionFrame:SetSize(10, 10)
     PositionFrame:Show()
 
-    local groupType = Utility:GetGroupType()
+    local GroupType = Utility:GetGroupType()
+    local GroupSize = GetNumGroupMembers()
+    local UnitSpacing = ZHeal.db.profile.unitSpacing
     oUF:SetActiveStyle(addonName .. "UnitFrames")
         
-    if groupType == "SOLO" then
+    if GroupType == "SOLO" then
         local UnitFramesPlayer = UnitFramesModule:CreatePlayer()
         UnitFramesPlayer:SetPoint("CENTER", addonName .. "_UnitFrames_PositionFrame")
-    elseif groupType == "PARTY" then
+    elseif GroupType == "PARTY" then
         UnitFramesPlayer = UnitFramesModule:CreatePlayer()
-        UnitFramesPlayer:SetPoint("CENTER", addonName .. "_UnitFrames_PositionFrame", "CENTER", -90, 0)
+        UnitFramesPlayer:SetPoint("LEFT", addonName .. "_UnitFrames_PositionFrame", "CENTER", -1 * (Utility:GetOverallSize(ZHeal.db.profile.unitWidth, UnitSpacing, GroupSize) / 2), 0)
 
         local UnitFramesParty = UnitFramesModule:CreateParty()
-        UnitFramesParty:SetPoint("CENTER", addonName .. "_UnitFrames_PositionFrame", "CENTER", -40, 0)
-    elseif groupType == "RAID" then
+        UnitFramesParty:SetPoint("LEFT", UnitFramesPlayer, "RIGHT", UnitSpacing, 0)
+    elseif GroupType == "RAID" then
         local UnitFramesRaid = UnitFramesModule:CreateRaid()
-        UnitFramesRaid:SetPoint("CENTER", addonName .. "_UnitFrames_PositionFrame", "CENTER", -280, 0)
+        UnitFramesRaid:SetPoint("CENTER", addonName .. "_UnitFrames_PositionFrame", "CENTER", 0, 0)
     end
 end
 
@@ -87,7 +108,7 @@ function UnitFramesModule:CreateHealButton(Header, Index, Target, FadeTable, Par
 
     button:SetAttribute("unit", Target)
 
-    button:AddToMasque(LibStub("Masque"):Group(addonName, addonName))
+    button:AddToMasque(LibStub("Masque"):Group(addonName, "Heal Buttons"))
     buttonIndex = buttonIndex + 1
 
     table.insert(FadeTable, button)
@@ -106,6 +127,10 @@ function UnitFramesModule:CreatePlayer()
         HealButtonsPlayer[i] = UnitFramesModule:CreateHealButton(header, i, "player", FadeTable, UnitFramesPlayer)
     end
 
+    local NameText, HealthText = addonTable.AddTexts(UnitFramesPlayer, "player", ZHeal.db.profile.textFont, ZHeal.db.profile.textSizeName, 0, -8, "CENTER", nil, ZHeal.db.profile.textSizeHealth, 0, -5, "TOP")
+    table.insert(TextNameArray, NameText)
+    table.insert(TextHealthArray, HealthText)
+    
     local FadeHandlerFrame = CreateFrame("Frame", "ZHeal_FadeHandlerFrame_Player", UnitFramesPlayer)
     FadeHandlerFrame:SetAllPoints(UnitFramesPlayer)
     FadeHandlerFrame:SetScript("OnUpdate", function(self)
@@ -123,7 +148,7 @@ function UnitFramesModule:CreatePlayer()
             end
         end
     end)
-
+    
     return UnitFramesPlayer
 end
 
@@ -134,7 +159,7 @@ function UnitFramesModule:CreateParty()
 		"maxColumns", 4,
 		"unitsPerColumn", 1,
 		"columnAnchorPoint", "LEFT",
-		"columnSpacing", 2,
+		"columnSpacing", ZHeal.db.profile.unitSpacing,
 		"oUF-initialConfigFunction", [[
 			
 		]]
@@ -151,6 +176,11 @@ function UnitFramesModule:CreateParty()
             for i = 1, ZHeal.db.class.numButtons do
                 HealButtonsParty[n][i] = UnitFramesModule:CreateHealButton(header, i, "party" .. n, FadeTable, "oUF_ZHealUnitFramesPartyUnitButton" .. n)
             end
+
+            local NameText, HealthText = addonTable.AddTexts(_G["oUF_ZHealUnitFramesPartyUnitButton" .. n], "party" .. n, ZHeal.db.profile.textFont, ZHeal.db.profile.textSizeName, 0, -8, "CENTER", nil, ZHeal.db.profile.textSizeHealth, 0, -5, "TOP")
+            table.insert(TextNameArray, NameText)
+            table.insert(TextHealthArray, HealthText)
+
             local FadeHandlerFrame = CreateFrame("Frame", "ZHeal_FadeHandlerFrame_Party_" .. n, _G["oUF_ZHealUnitFramesPartyUnitButton" .. n])
             FadeHandlerFrame:SetAllPoints("oUF_ZHealUnitFramesPartyUnitButton" .. n)
             FadeHandlerFrame:SetScript("OnUpdate", function(self)
@@ -181,7 +211,7 @@ function UnitFramesModule:CreateRaid()
 		"maxColumns", 40,
 		"unitsPerColumn", 1,
 		"columnAnchorPoint", "LEFT",
-		"columnSpacing", 2,
+		"columnSpacing", ZHeal.db.profile.unitSpacing,
 		"oUF-initialConfigFunction", [[
 			
 		]]
@@ -198,6 +228,11 @@ function UnitFramesModule:CreateRaid()
             for i = 1, ZHeal.db.class.numButtons do
                 HealButtonsRaid[n][i] = UnitFramesModule:CreateHealButton(header, i, "raid" .. n, FadeTable, "oUF_ZHealUnitFramesRaidUnitButton" .. n)
             end
+
+            local NameText, HealthText = addonTable.AddTexts(_G["oUF_ZHealUnitFramesRaidUnitButton" .. n], "raid" .. n, ZHeal.db.profile.textFont, ZHeal.db.profile.textSizeName, 0, -8, "CENTER", nil, ZHeal.db.profile.textSizeHealth, 0, -5, "TOP")
+            table.insert(TextNameArray, NameText)
+            table.insert(TextHealthArray, HealthText)
+            
             local FadeHandlerFrame = CreateFrame("Frame", "ZHeal_FadeHandlerFrame_Raid_" .. n, _G["oUF_ZHealUnitFramesRaidUnitButton" .. n])
             FadeHandlerFrame:SetAllPoints("oUF_ZHealUnitFramesRaidUnitButton" .. n)
             FadeHandlerFrame:SetScript("OnUpdate", function(self)
@@ -267,5 +302,16 @@ function UnitFramesModule:UpdateButtons(spellArray)
                 end
             end
         end 
+    end
+end
+
+function UnitFramesModule:UpdateText()
+    for _,v in ipairs(TextNameArray) do
+        v.FontString:SetFont(ZHeal.db.profile.textFont, ZHeal.db.profile.textSizeName, "OUTLINE")
+    end
+
+    for _,v in ipairs(TextHealthArray) do
+        v.FontString:SetFont(ZHeal.db.profile.textFont, ZHeal.db.profile.textSizeHealth, "OUTLINE")
+        v.FontString:SetTextColor(ZHeal.db.profile.textColorHealth["R"], ZHeal.db.profile.textColorHealth["G"], ZHeal.db.profile.textColorHealth["B"], 1)
     end
 end

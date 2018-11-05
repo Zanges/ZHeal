@@ -92,3 +92,63 @@ function Utility:GetGroupType()
     end
     return "SOLO"
 end
+
+function Utility:ClassColorText(Class, InputText)
+    local Text
+    local Color = {}
+
+    if Class then
+        Color["R"], Color["G"], Color["B"] = GetClassColor(Class)
+    end
+    
+    Text = format('|cff%02x%02x%02x%s|r', Color["R"] * 255, Color["G"] * 255, Color["B"] * 255, tostring(InputText))
+    return Text
+end
+
+function Utility:ClassColorVerticalText(Class, InputText, MaxLength)
+    MaxLength = MaxLength or 10000
+    local Text
+    local Color = {}
+    local ReturnString = ""
+
+    if Class then
+        Color["R"], Color["G"], Color["B"] = GetClassColor(Class)
+    end
+    
+    Text = tostring(InputText)
+    local ColorCode = format("ff%02x%02x%02x", Color["R"] * 255, Color["G"] * 255, Color["B"] * 255)
+    
+    local Length = strlen(Text)
+    if Length > MaxLength then
+        for i=1, MaxLength do
+            ReturnString = ReturnString .. "|c" .. ColorCode .. strsub(Text, i, i) .. "|r\n"
+        end
+        ReturnString = ReturnString .. "|c" .. ColorCode .. "...|r\n"
+    else
+        for i=1, Length do
+            ReturnString = ReturnString .. "|c" .. ColorCode .. strsub(Text, i, i) .. "|r\n"
+        end
+    end
+    
+    return ReturnString
+end
+
+function Utility:GetOverallSize(objSize, objSpacing, objNumber)
+    return ((objSize * objNumber) + (objSpacing * (objNumber - 1)))
+end
+
+function Utility:FormatTime(seconds)    -- from oUF_Layout [https://github.com/Rainrider/oUF_Layout]
+	local day, hour, minute = 86400, 3600, 60
+	if (seconds >= day) then
+		return string.format('%dd', math.floor(seconds/day + 0.5))
+	elseif (seconds >= hour) then
+		return string.format('%dh', math.floor(seconds/hour + 0.5))
+	elseif (seconds >= minute) then
+		if (seconds <= minute * 5) then
+			return string.format('%d:%02d', math.floor(seconds/minute), seconds % minute)
+		end
+		return string.format('%dm', math.floor(seconds/minute + 0.5))
+	else
+		return string.format('%d', seconds)
+	end
+end

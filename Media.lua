@@ -4,8 +4,9 @@ local Media = addonTable.Media
 local LSM = LibStub("LibSharedMedia-3.0")
 
 
-LSM:Register("border", "White Square 1px", [[Interface\AddOns\ZHeal\Assets\Textures\Border1px.tga]])
-LSM:Register("statusbar", "Sleek", [[Interface\AddOns\ZHeal\Assets\Textures\SleekTexture.tga]])
+LSM:Register(LSM.MediaType.BORDER, "White Square 1px", [[Interface\AddOns\ZHeal\Assets\Textures\Border1px.tga]])
+LSM:Register(LSM.MediaType.STATUSBAR, "Sleek", [[Interface\AddOns\ZHeal\Assets\Textures\SleekTexture.tga]])
+LSM:Register(LSM.MediaType.BACKGROUND, "Button Overlay", [[Interface\AddOns\ZHeal\Assets\Textures\ButtonOverlay.tga]])
 
 Media.QuestionMark = "Interface\\ICONS\\INV_Misc_QuestionMark.blp"
 
