@@ -46,10 +46,6 @@ local function CreateAura(auras, index)
         button.cd = cooldown
     end
     
-    
-
-    
-
 	button.UpdateTooltip = UpdateAuraTooltip
 	button:SetScript("OnEnter", AuraOnEnter)
 	button:SetScript("OnLeave", AuraOnLeave)
@@ -104,7 +100,8 @@ local function PostUpdateAura(auras, unit, aura, index, offset)
 end
 
 local function CreateAuras(self, unit, nameSuffix)
-	local auras = CreateFrame("Frame", self:GetName() .. "_" .. nameSuffix, self)
+    local auras = CreateFrame("Frame", self:GetName() .. "_" .. nameSuffix, self)
+    auras:SetFrameLevel(8)
 	auras.spacing = 2
 	auras.size = ((ZHeal.db.profile.unitWidth / 2) - (auras.spacing / 2))
 	auras:SetSize(2 * (auras.size + auras.spacing), 6 * (auras.size + auras.spacing))

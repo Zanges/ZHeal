@@ -6,4 +6,5 @@
     <Script file="Dispel.lua"/>
     <Script file="Indicators.lua"/>
     <Script file="Auras.lua"/>
+    <Script file="HealthPrediction.lua"/>
  </Ui>

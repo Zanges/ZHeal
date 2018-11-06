@@ -53,6 +53,7 @@ local UnitFramesStyle = function(self, unit)
     }
 
     local HealthBar, HealthBG = addonTable.AddVerticalHealthBar(self, self, "BOTTOMLEFT", 2, 0, 0.8, 1)
+    addonTable.AddVerticalHealthPrediction(self)
     local PowerBar, PowerBG = addonTable.AddVerticalPowerBar(self, self, "BOTTOMRIGHT", 2, 0, 0.2, 1)
     addonTable.AddDispel(self, unit)
     addonTable.AddRaidTargetIndicator(self, unit, 16, 3, 3, "BOTTOMLEFT")
@@ -113,6 +114,10 @@ function UnitFramesModule:CreateHealButton(Header, Index, Target, FadeTable, Par
 
     table.insert(FadeTable, button)
 
+    button:Show()
+    button:SetAlpha(0)
+    button.alphaShown = false
+
     return button
 end
 
@@ -122,32 +127,19 @@ function UnitFramesModule:CreatePlayer()
     local header = CreateFrame("Frame", "ZHeal_ButtonHeader_Player", UnitFramesPlayer, "SecureHandlerStateTemplate")
     header:SetFrameLevel(8)
 
-    local FadeTable = {}
+    local FadeHandlerFrame = CreateFrame("Frame", "ZHeal_FadeHandlerFrame_Player", UnitFramesPlayer)
+    FadeHandlerFrame:SetAllPoints(UnitFramesPlayer)
+    FadeHandlerFrame.runHide = false
+    FadeHandlerFrame:SetScript("OnUpdate", FadeHandlerOnUpdateInit)
+    FadeHandlerFrame.FadeTable = {}
+
     for i = 1, ZHeal.db.class.numButtons do
-        HealButtonsPlayer[i] = UnitFramesModule:CreateHealButton(header, i, "player", FadeTable, UnitFramesPlayer)
+        HealButtonsPlayer[i] = UnitFramesModule:CreateHealButton(header, i, "player", FadeHandlerFrame.FadeTable, UnitFramesPlayer)
     end
 
     local NameText, HealthText = addonTable.AddTexts(UnitFramesPlayer, "player", ZHeal.db.profile.textFont, ZHeal.db.profile.textSizeName, 0, -8, "CENTER", nil, ZHeal.db.profile.textSizeHealth, 0, -5, "TOP")
     table.insert(TextNameArray, NameText)
     table.insert(TextHealthArray, HealthText)
-    
-    local FadeHandlerFrame = CreateFrame("Frame", "ZHeal_FadeHandlerFrame_Player", UnitFramesPlayer)
-    FadeHandlerFrame:SetAllPoints(UnitFramesPlayer)
-    FadeHandlerFrame:SetScript("OnUpdate", function(self)
-        if MouseIsOver(self) then
-            for _,b in ipairs(FadeTable) do
-                if not b:IsVisible() then
-                    b:Show()
-                end
-            end
-        else
-            for _,b in ipairs(FadeTable) do
-                if b:IsVisible() then
-                    b:Hide()
-                end
-            end
-        end
-    end)
     
     return UnitFramesPlayer
 end
@@ -171,33 +163,20 @@ function UnitFramesModule:CreateParty()
 
     for n = 1, 4 do
         if _G["oUF_ZHealUnitFramesPartyUnitButton" .. n] ~= nil then
-            local FadeTable = {}
+            local FadeHandlerFrame = CreateFrame("Frame", "ZHeal_FadeHandlerFrame_Party_" .. n, _G["oUF_ZHealUnitFramesPartyUnitButton" .. n])
+            FadeHandlerFrame:SetAllPoints("oUF_ZHealUnitFramesPartyUnitButton" .. n)
+            FadeHandlerFrame.runHide = false
+            FadeHandlerFrame:SetScript("OnUpdate", FadeHandlerOnUpdateInit)
+            FadeHandlerFrame.FadeTable = {}
+
             HealButtonsParty[n] = {}
             for i = 1, ZHeal.db.class.numButtons do
-                HealButtonsParty[n][i] = UnitFramesModule:CreateHealButton(header, i, "party" .. n, FadeTable, "oUF_ZHealUnitFramesPartyUnitButton" .. n)
+                HealButtonsParty[n][i] = UnitFramesModule:CreateHealButton(header, i, "party" .. n, FadeHandlerFrame.FadeTable, "oUF_ZHealUnitFramesPartyUnitButton" .. n)
             end
 
             local NameText, HealthText = addonTable.AddTexts(_G["oUF_ZHealUnitFramesPartyUnitButton" .. n], "party" .. n, ZHeal.db.profile.textFont, ZHeal.db.profile.textSizeName, 0, -8, "CENTER", nil, ZHeal.db.profile.textSizeHealth, 0, -5, "TOP")
             table.insert(TextNameArray, NameText)
             table.insert(TextHealthArray, HealthText)
-
-            local FadeHandlerFrame = CreateFrame("Frame", "ZHeal_FadeHandlerFrame_Party_" .. n, _G["oUF_ZHealUnitFramesPartyUnitButton" .. n])
-            FadeHandlerFrame:SetAllPoints("oUF_ZHealUnitFramesPartyUnitButton" .. n)
-            FadeHandlerFrame:SetScript("OnUpdate", function(self)
-                if MouseIsOver(self) then
-                    for _,b in ipairs(FadeTable) do
-                        if not b:IsVisible() then
-                            b:Show()
-                        end
-                    end
-                else
-                    for _,b in ipairs(FadeTable) do
-                        if b:IsVisible() then
-                            b:Hide()
-                        end
-                    end
-                end
-            end)
         end
     end
     
@@ -223,33 +202,20 @@ function UnitFramesModule:CreateRaid()
 
     for n = 1, 4 do
         if _G["oUF_ZHealUnitFramesRaidUnitButton" .. n] ~= nil then
-            local FadeTable = {}
+            local FadeHandlerFrame = CreateFrame("Frame", "ZHeal_FadeHandlerFrame_Raid_" .. n, _G["oUF_ZHealUnitFramesRaidUnitButton" .. n])
+            FadeHandlerFrame:SetAllPoints("oUF_ZHealUnitFramesRaidUnitButton" .. n)
+            FadeHandlerFrame.runHide = false
+            FadeHandlerFrame:SetScript("OnUpdate", FadeHandlerOnUpdateInit)
+            FadeHandlerFrame.FadeTable = {}
+
             HealButtonsRaid[n] = {}
             for i = 1, ZHeal.db.class.numButtons do
-                HealButtonsRaid[n][i] = UnitFramesModule:CreateHealButton(header, i, "raid" .. n, FadeTable, "oUF_ZHealUnitFramesRaidUnitButton" .. n)
+                HealButtonsRaid[n][i] = UnitFramesModule:CreateHealButton(header, i, "raid" .. n, FadeHandlerFrame.FadeTable, "oUF_ZHealUnitFramesRaidUnitButton" .. n)
             end
 
             local NameText, HealthText = addonTable.AddTexts(_G["oUF_ZHealUnitFramesRaidUnitButton" .. n], "raid" .. n, ZHeal.db.profile.textFont, ZHeal.db.profile.textSizeName, 0, -8, "CENTER", nil, ZHeal.db.profile.textSizeHealth, 0, -5, "TOP")
             table.insert(TextNameArray, NameText)
             table.insert(TextHealthArray, HealthText)
-            
-            local FadeHandlerFrame = CreateFrame("Frame", "ZHeal_FadeHandlerFrame_Raid_" .. n, _G["oUF_ZHealUnitFramesRaidUnitButton" .. n])
-            FadeHandlerFrame:SetAllPoints("oUF_ZHealUnitFramesRaidUnitButton" .. n)
-            FadeHandlerFrame:SetScript("OnUpdate", function(self)
-                if MouseIsOver(self) then
-                    for _,b in ipairs(FadeTable) do
-                        if not b:IsVisible() then
-                            b:Show()
-                        end
-                    end
-                else
-                    for _,b in ipairs(FadeTable) do
-                        if b:IsVisible() then
-                            b:Hide()
-                        end
-                    end
-                end
-            end)
         end
     end
     
@@ -271,22 +237,26 @@ end
 function UnitFramesModule:UpdateButtons(spellArray)
     -- player
     for i,v in ipairs(HealButtonsPlayer) do
+        local Alpha = v:GetAlpha()
         if spellArray[i] ~= nil then
             v:SetState(0, "spell", spellArray[i])
         else
             v:SetState(0, nil)
         end
+        v:SetAlpha(Alpha)
     end
 
     -- party
     for n,t in ipairs(HealButtonsParty) do
         if t ~= nil then
             for i,v in ipairs(HealButtonsParty[n]) do
+                local Alpha = v:GetAlpha()
                 if spellArray[i] ~= nil then
                     v:SetState(0, "spell", spellArray[i])
                 else
                     v:SetState(0, nil)
                 end
+                v:SetAlpha(Alpha)
             end
         end 
     end
@@ -295,11 +265,13 @@ function UnitFramesModule:UpdateButtons(spellArray)
     for n,t in ipairs(HealButtonsRaid) do
         if t ~= nil then
             for i,v in ipairs(HealButtonsRaid[n]) do
+                local Alpha = v:GetAlpha()
                 if spellArray[i] ~= nil then
                     v:SetState(0, "spell", spellArray[i])
                 else
                     v:SetState(0, nil)
                 end
+                v:SetAlpha(Alpha)
             end
         end 
     end
@@ -314,4 +286,35 @@ function UnitFramesModule:UpdateText()
         v.FontString:SetFont(ZHeal.db.profile.textFont, ZHeal.db.profile.textSizeHealth, "OUTLINE")
         v.FontString:SetTextColor(ZHeal.db.profile.textColorHealth["R"], ZHeal.db.profile.textColorHealth["G"], ZHeal.db.profile.textColorHealth["B"], 1)
     end
+end
+
+function FadeHandlerOnUpdate(self)
+    if MouseIsOver(self) then
+        if not self.runHide then    -- check to avoid unnecessary for loop runs
+            for _,b in ipairs(self.FadeTable) do
+                if not b.alphaShown then
+                    b:SetAlpha(1)
+                    b.alphaShown = true
+                end
+            end
+            self.runHide = true
+        end
+    else
+        if self.runHide then    -- check to avoid unnecessary for loop runs
+            for _,b in ipairs(self.FadeTable) do
+                if b.alphaShown then
+                    b:SetAlpha(0)
+                    b.alphaShown = false
+                end
+            end
+            self.runHide = false
+        end
+    end
+end
+
+function FadeHandlerOnUpdateInit(self)  -- fix for buttons setting alpha to 1 after creation
+    for _,b in ipairs(self.FadeTable) do
+        b:SetAlpha(0)
+    end
+    self:SetScript("OnUpdate", FadeHandlerOnUpdate)
 end
